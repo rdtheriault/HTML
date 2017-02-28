@@ -1,0 +1,87 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso 8859-1">
+<title>Welcome to the Unbeatable Game</title>
+<script src="jquery.js"></script>
+
+<style>
+	.smallBlock {
+		height:15px;
+		width:15px;
+		background-color:black;
+		margin:2px;
+	}
+</style>
+</head>
+<body>
+<h1 id="main">The Unbeatable Game</h1>
+Last updated Jan 2017&nbsp;&nbsp; <br>
+<br>
+<h2>Rules</h2>
+You go first, pick 1-3 blocks to take away, then computer will pick 1-3 blocks. Last one to take a block wins. You are red, the computer is blue.<br><br><br>
+
+<div id="all">
+	<div id="blocks" style="display:flex;">
+		<div id="a12" class="smallBlock"></div>
+		<div id="a11" class="smallBlock"></div>
+		<div id="a10" class="smallBlock"></div>
+		<div id="a9" class="smallBlock"></div>
+		<div id="a8" class="smallBlock"></div>
+		<div id="a7" class="smallBlock"></div>
+		<div id="a6" class="smallBlock"></div>
+		<div id="a5" class="smallBlock"></div>
+		<div id="a4" class="smallBlock"></div>
+		<div id="a3" class="smallBlock"></div>
+		<div id="a2" class="smallBlock"></div>
+		<div id="a1" class="smallBlock" ></div>
+	</div>
+	<div id="player">
+		Pick how many you take <select id="take"><option value="1">1</option><option value="2">2</option><option value="3">3</option></select> <button id="go">Select</button>
+	</div>
+	<div id="computer">
+	
+	</div>
+</div>
+ 
+ <script>
+	
+	var counter = 0;
+	var total = 11;
+	var tries = 4;//as turn starts at 1
+	var turn = 1;
+	
+	var blocks = document.getElementsByClassName("smallBlock");
+	document.getElementById("go").addEventListener("click", go);
+	
+	function go() {
+		var selector = $("#take").val();
+		selector = parseInt(selector);
+		var comp = 4 - selector;
+		var count = counter;
+		
+		for (var i = count; i < count + selector; i++){
+			blocks[counter].style.backgroundColor = "red";
+			counter++
+		}
+		count = counter;
+		for (var i = count; i < count + comp; i++) {
+			blocks[counter].style.backgroundColor = "blue";
+			counter++	
+		}
+		turn++;
+		if (turn == tries){
+			$("#computer").html("You selected " + selector + " blocks and the computer selected " + comp + " blocks. The computer won!!!");
+			$("#go").hide();
+		}
+		else{
+			$("#computer").html("You selected " + selector + " blocks and the computer selected " + comp + " blocks. Proceed to turn " + turn);
+		}
+	}
+	
+</script>
+
+
+
+
+</body>
+</html>
