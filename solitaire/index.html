@@ -1,0 +1,202 @@
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<style>
+		#outer{
+			display:flex;
+		}
+		.inner {
+			padding:10px;
+			height:10000px;
+			width:10000px;
+		}
+		#counter {
+			position:fixed;
+			top:0px;
+			right:0px;
+		}
+		#canvas {
+			border: 2px solid black;
+			height:300px;
+			width:300px;
+			display: table-cell;
+			vertical-align: middle;
+			text-align: center;
+		}
+		#original {
+			height:100px;
+			width:75px;
+			background-image: url("http://www.sagefirellc.com/Pictures/SageFireLLC_Big.png");
+			background-repeat: repeat-y;
+			background-size: contain;
+			margin: 0 auto; 
+			vertical-align: middle;
+			border: 1px solid black;
+		}
+		.card {
+			border: 1px solid black;
+			text-align: center;
+			padding-top:25px;
+			background-color:white;
+		}
+	</style>
+</head>
+<body>
+<div id="outer">
+	<div class="inner">
+		<h2 id="header">Lets play 52 card pick up... <br>Swipe on the deck of cards to begin</h2>
+		
+		<div id="canvas">
+			<div id="original"></div>
+		</div>
+
+		<div id="counter"></div>
+	</div>
+</div>
+<script>
+var min = 0;
+var max = 9500;//make less than canvas
+var counter = 0;//count up to 52
+var cards = [
+	['2','Spade','black'],
+	['2','Club','black'],
+	['2','Diamond','red'],
+    ['2','Heart','red'],
+	['3','Spade','black'],
+	['3','Club','black'],
+	['3','Diamond','red'],
+    ['3','Heart','red'],
+	['4','Spade','black'],
+	['4','Club','black'],
+	['4','Diamond','red'],
+    ['4','Heart','red'],
+	['5','Spade','black'],
+	['5','Club','black'],
+	['5','Diamond','red'],
+    ['5','Heart','red'],
+	['6','Spade','black'],
+	['6','Club','black'],
+	['6','Diamond','red'],
+    ['6','Heart','red'],
+	['7','Spade','black'],
+	['7','Club','black'],
+	['7','Diamond','red'],
+    ['7','Heart','red'],
+	['8','Spade','black'],
+	['8','Club','black'],
+	['8','Diamond','red'],
+    ['8','Heart','red'],
+	['9','Spade','black'],
+	['9','Club','black'],
+	['9','Diamond','red'],
+    ['9','Heart','red'],
+	['10','Spade','black'],
+	['10','Club','black'],
+	['10','Diamond','red'],
+    ['10','Heart','red'],
+	['J','Spade','black'],
+	['J','Club','black'],
+	['J','Diamond','red'],
+    ['J','Heart','red'],
+	['Q','Spade','black'],
+	['Q','Club','black'],
+	['Q','Diamond','red'],
+    ['Q','Heart','red'],
+	['K','Spade','black'],
+	['K','Club','black'],
+	['K','Diamond','red'],
+    ['K','Heart','red'],
+	['A','Spade','black'],
+	['A','Club','black'],
+	['A','Diamond','red'],
+    ['A','Heart','red']
+];
+
+var flag1 = 0;
+var flag2 = 0;
+
+//listen for drag over item, have to click on item then drag, you can drag off the card
+var btn2 = document.getElementById("original");
+btn2.addEventListener("mousedown", function(){
+    flag1 = 1;
+}, false);
+btn2.addEventListener("mousemove", function(){
+    flag2 = 1;
+}, false);
+document.body.addEventListener("mouseup", function(){
+    if(flag1 === 1 && flag2 === 1){
+		mess();
+    }
+		flag1 = 0;
+		flag2 = 0;
+}, false);
+
+//card object (which is just a "button")
+var Button = function(config) {
+    this.xPos = config.xPos || (Math.random() * (max - min) + min);
+    this.yPos = config.yPos || (Math.random() * (max - min) + min);
+    this.width = config.width || 75;
+    this.height = config.height || 100;
+    this.clicked = config.clicked || false;
+	this.id = config.id || "";
+};
+
+var canvas = document.getElementById("canvas");
+
+function mess() {
+	//set up board
+	document.getElementById("header").innerHTML = ("Ok, go pick them up...")
+	canvas.style.height = "10000px";
+	canvas.style.width = "10000px";
+	canvas.style.border = "none";
+	btn2.style.display = "none";
+
+	//place each card and give it an id
+	for (var i = 0; i < cards.length; i++){
+		var btn = new Button({
+			id: cards[i][0]+cards[i][1],
+		});
+		var div = document.createElement('div');
+		div.style.position = "absolute";
+		div.style.top = btn.yPos;
+		div.style.left = btn.xPos;
+		div.style.width = btn.width;
+		div.style.height = btn.height;
+		div.id = btn.id;
+		div.innerHTML = cards[i][0]+"<br>"+cards[i][1]
+		div.className = "card";
+		div.style.color = cards[i][2];
+
+		document.body.appendChild(div);
+	}
+	var classname = document.getElementsByClassName("card");
+	//create a event listener for each card
+	for (var i = 0; i < classname.length; i++) {
+		classname[i].addEventListener('click', function(e){ count(e);}, false);
+	}
+}
+
+function count(e) {
+	var idz = e.target.id;
+	document.getElementById(idz).style.display = "none";
+	counter++;
+	document.getElementById("counter").innerHTML = counter;
+	
+	//reset board once all cards are picked up
+	if (counter === 52){
+		canvas.style.height = "300px";
+		canvas.style.width = "300px";
+		canvas.style.border = "2px solid black";
+		$('h2').html("Good job, try again?");
+		//element.parentNode.removeChild(element);
+		$('.card').remove();
+		btn2.style.display = "block";
+		document.getElementById("counter").innerHTML = "";
+		counter = 0;
+	}
+}
+
+
+</script>
+</body>
+</html>
