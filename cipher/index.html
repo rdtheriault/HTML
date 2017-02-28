@@ -1,0 +1,120 @@
+<html>
+<head>
+	<style>
+		#outer{
+			display:flex;
+		}
+		.inner {
+			padding:10px;
+		}
+	</style>
+</head>
+<body>
+This will break if you have special characters or caps
+<div id="outer">
+	<div class="inner">
+		Enter decoded Message<br>
+		<textarea rows="4" cols="50" type="text" id="msg"></textarea><br>
+		Enter Code Word<br>
+		<input type="text" id="code"><br>
+
+		<button value="" id="btn">Codify</button>
+
+		<div id="answer"></div>
+	</div>
+	<div class="inner">
+		Enter coded Message<br>
+		<textarea rows="4" cols="50" id="msg2"></textarea><br>
+		Enter Code Word<br>
+		<input type="text" id="code2"><br>
+
+		<button value="" id="btn2">deCodify</button>
+
+		<div id="answer2"></div>
+	</div>
+</div>
+<script>
+var nums = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+var btn = document.getElementById("btn");
+var btn2 = document.getElementById("btn2");
+var secret;//full secret code
+var msg;//holds letter code for orginal
+var newz;//holds new letter code
+var offset;//holder for what the secret code offset is
+var secretCount = 0;
+var trans = [];
+
+btn.addEventListener("click",codify);
+function codify() {
+	clear();
+	document.getElementById("answer").innerHTML = "";
+	var str = document.getElementById("msg").value;
+	secret = document.getElementById("code").value;
+	//secretCount = secret.length;
+	for (var i = 0, len = str.length; i < len; i++) {
+		if (str[i]!= " "){
+			offset = nums.indexOf(secret[secretCount]);
+			msg = nums.indexOf(str[i]);
+			newz = convert(msg,offset);
+			trans.push(newz);
+			//document.getElementById("answer").innerHTML += offset+"<br>";
+			secretCount++
+			if (secretCount === secret.length){secretCount = 0;}
+		}
+		else {
+			trans.push(" ");
+		}		
+	}
+	for (var j = 0; j < trans.length; j++) {
+		document.getElementById("answer").innerHTML += trans[j];	
+	}
+}
+
+function convert(msg,offset) {
+	var ans = msg + offset;
+	if (ans > 25){ans = ans -25;}
+	var answer = nums[ans];
+	return answer;
+}
+
+btn2.addEventListener("click",decodify);
+function decodify() {
+	clear();
+	var str = document.getElementById("msg2").value;
+	secret = document.getElementById("code2").value;
+	//secretCount = secret.length;
+	for (var i = 0, len = str.length; i < len; i++) {
+		if (str[i]!= " "){
+			offset = nums.indexOf(secret[secretCount]);
+			msg = nums.indexOf(str[i]);
+			newz = deconvert(msg,offset);
+			trans.push(newz);
+			//document.getElementById("answer2").innerHTML += offset+"<br>";
+			secretCount++
+			if (secretCount === secret.length){secretCount = 0;}
+		}
+		else {
+			trans.push(" ");
+		}		
+	}
+	for (var j = 0; j < trans.length; j++) {
+		document.getElementById("answer2").innerHTML += trans[j];	
+	}
+}
+
+function deconvert(msg,offset) {
+	var ans = msg - offset;
+	if (ans < 0){ans = ans + 25;}
+	var answer = nums[ans];
+	return answer;
+}
+
+function clear() {
+	trans = [];
+	secretCount = 0;
+	document.getElementById("answer").innerHTML = "";
+	document.getElementById("answer2").innerHTML = "";
+}
+</script>
+</body>
+</html>
